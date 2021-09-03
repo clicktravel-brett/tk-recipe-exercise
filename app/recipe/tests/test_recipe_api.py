@@ -17,7 +17,7 @@ def detail_url(recipe_id):
 
 def search_url(recipe_name):
     """Return recipe search url"""
-    return RECIPES_URL + f'?name={recipe_name}'
+    return f'{RECIPES_URL}?name={recipe_name}'
 
 
 def sample_recipe(**params):
@@ -85,9 +85,9 @@ class RecipeApiTests(TestCase):
         self.assertEqual(payload.get('name'), recipe.name)
 
         ingredients = Ingredient.objects.filter(recipe=res.data['id'])
-        self.assertEqual(len(ingredients), 3)
-        for ingredient in ingredients:
-            self.assertIn(ingredient.name, 'Cheese Dough Tomato')
+        self.assertEqual(ingredients.count(), 3)
+        for ingredient_name in ingredients.values_list('name', flat=True):
+            self.assertIn(ingredient_name, 'Cheese Dough Tomato')
 
     def test_update_recipe(self):
         """Test updating a recipe"""
